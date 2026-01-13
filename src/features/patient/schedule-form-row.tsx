@@ -145,17 +145,18 @@ function scheduleToString(member: PatientScheduleResponse) {
     2: "nd",
     3: "rd",
   };
+  let freqString = "";
   if (member.schedule_frequency_regular_repeat_every != null) {
     const ordinalStr =
       ordinalSuperscript[member.schedule_frequency_regular_repeat_every] ||
       "th";
-    var freqString =
+    freqString =
       "Every " +
       member.schedule_frequency_regular_repeat_every +
       ordinalStr +
       " day";
   } else {
-    var freqString = "Days: " + schedDays(member);
+    freqString = "Days: " + schedDays(member);
   }
   freqString += " at times: " + member.schedule_times.join(", ");
   return freqString;

@@ -1,31 +1,20 @@
 import clsx from "clsx";
 import React from "react";
-import { useNavigate } from "react-router-dom";
 import styles from "./button.module.css";
+import { Link } from "react-router-dom";
 
-interface Props extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
-  href: string;
-}
+interface Props extends React.ComponentProps<typeof Link> {}
 
 /** An anchor tag which looks like a button. */
 export function AButton(props: Props) {
-  const { href, onClick, className, ...rest } = props;
-  const navigate = useNavigate();
-
-  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault();
-    navigate(href);
-    onClick?.(e);
-  };
+  const { onClick, className, ...rest } = props;
 
   return (
-    <a
+    <Link
       {...rest}
-      href={href}
-      onClick={handleClick}
       className={clsx(styles.button, className)}
     >
       {props.children}
-    </a>
+    </Link>
   );
 }

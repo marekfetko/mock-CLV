@@ -31,7 +31,7 @@ export class AddLabs extends DataAdd {
     this.supportedVariables = this.patient.supportedMedData.filter(
       (data) => data.data_category === MedicalDataCategory.labs,
     );
-    var empty = [];
+    let empty = [];
     for (const variable of this.supportedVariables) {
       const temp = {
         measurement_datetime: this.defaultDateTime,

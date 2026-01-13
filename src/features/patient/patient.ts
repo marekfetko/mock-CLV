@@ -221,10 +221,11 @@ export class Patient {
   }
 
   async togglePatientState() {
+    let newState: PatientState;
     if (this.data.patient_state === PatientState.normal) {
-      var newState = PatientState.high_risk;
+      newState = PatientState.high_risk;
     } else {
-      var newState = PatientState.normal;
+      newState = PatientState.normal;
     }
     await apiPutPatientsPatientId({
       path: { patient_id: this.patientId },
@@ -246,7 +247,7 @@ export class Patient {
         extended_report: extended,
       },
     });
-    var reportsData = reports.data;
+    let reportsData = reports.data;
     reportsData.from_date = dateTimeOrNull(reportsData.from_date, false);
     reportsData.from_date =
       reportsData.from_date === null ? "--" : reportsData.from_date;

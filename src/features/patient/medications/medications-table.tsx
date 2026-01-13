@@ -1,86 +1,91 @@
 import { reactive } from "@vue/reactivity";
 import { useMemo } from "react";
-import { apiGetHfLabDataPatientId } from "../../../api";
+import { apiGetPatientsPatientIdMedications } from "../../../api";
 import { AppModel } from "../../../app/app-model";
 import { AButton } from "../../../components/ui-kit/a-button";
 import { CellLastEdit } from "../../../components/ui-kit/tables/cells/cell-last-edit";
 import { DataTable } from "../../../components/ui-kit/tables/data-table";
 import { reacter } from "../../../utils/react";
 import { useFetch } from "../../../utils/use-fetch";
-import { MedData } from "../common/med-data";
-import { MedicalPlot } from "../common/medical-plot";
+import { Medications } from "./medications";
 import { PatientSubpage } from "../common/patient-subpage";
 
-export const LabsTable = reacter(function LabsTable(props: { app: AppModel }) {
+export const MedicationsTable = reacter(function MedicationsTable(props: { app: AppModel }) {
   const patient = props.app.patient;
   const api = props.app.seerlinqApi;
 
   const model = useMemo(
-    () => reactive(new MedData([], api.userLevel, api.userUUID)),
+    () => reactive(new Medications([], api.userLevel, api.userUUID)),
     [api.userLevel, api.userUUID],
   );
 
   const { loading, refetch } = useFetch(
     async ({ isRefetch }) => {
-      const response = await apiGetHfLabDataPatientId({
+      const response = await apiGetPatientsPatientIdMedications({
         path: { patient_id: patient.patientId },
         meta: { useSessionCache: !isRefetch },
       });
-      model.updateData(response.data.medical_data);
+      model.updateData(response.data.medications);
       await patient.fetchSupportedMedicalData();
     },
     [patient.patientId],
   );
 
   return (
-    <PatientSubpage title="Labs" loading={loading}>
-      <AButton to="add">Add labs</AButton>
-
-      <MedicalPlot
-        dataModel={model}
-        plotTypeOptions={[
-          "NT-proBNP",
-          "BNP",
-          "urea",
-          "creatinine",
-          "hemoglobin",
-          "hematocrit",
-        ]}
-      />
+    <PatientSubpage title="Medications" loading={loading}>
+      <AButton to="add">Add medications</AButton>
 
       <br />
       <br />
       <br />
 
       <DataTable
-        name={`patient/${patient.patientId}/labs`}
+        name={`patient/${patient.patientId}/medications`}
         model={model}
         columns={[
           {
-            header1: "Measured",
-            attr: "measurement_datetime",
+            header1: "Started",
+            attr: "medication_started",
             type: "datetime",
             editable: true,
             sort: true,
             initSort: "desc",
           },
           {
-            header1: "Type",
-            attr: "measurement_type",
-            type: "string",
+            header1: "Ended",
+            attr: "medication_ended",
+            type: "datetime",
+            editable: true,
             sort: true,
+            initSort: "desc",
           },
           {
-            header1: "Value",
-            attr: "measurement_value",
-            type: "number",
-            precision: 1,
+            header1: "Group",
+            attr: "medication_group",
+            type: "string",
+            sort: true,
+            initSort: "desc",
+          },
+          {
+            header1: "Name",
+            attr: "medication_name",
+            type: "string",
+            sort: true,
+            initSort: "desc",
+          },
+          {
+            header1: "Dose",
+            attr: "medication_dose",
+            type: "string",
             editable: true,
+            sort: true,
+            initSort: "desc",
           },
           {
             header1: "Unit",
-            attr: "measurement_unit",
+            attr: "medication_unit",
             type: "string",
+            editable: true,
           },
           {
             header1: "Comment",
@@ -100,11 +105,11 @@ export const LabsTable = reacter(function LabsTable(props: { app: AppModel }) {
           },
         ]}
         onEdit={async (editedField, item) => {
-          await patient.updateItem("medicaldata", item.uuid, editedField);
+          await patient.updateItem("medications", item.uuid, editedField);
           await refetch();
         }}
         onDelete={async (item) => {
-          await patient.deleteItem("medicaldata", item.uuid);
+          await patient.deleteItem("medications", item.uuid);
           await refetch();
         }}
       />

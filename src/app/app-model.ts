@@ -51,7 +51,7 @@ export class AppModel {
 
   // dark mode
   setTheme() {
-    var darkTheme = document.getElementById("dark-mode-css") as HTMLLinkElement;
+    let darkTheme = document.getElementById("dark-mode-css") as HTMLLinkElement;
     if (this.darkMode) {
       darkTheme.disabled = false;
     } else {

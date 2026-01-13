@@ -41,6 +41,10 @@ export const PatientRoute = reacter(function PatientRoute(props: {
             {props.app.seerlinqApi.userLevel >= 3 && (
               <MenuItem href={`/patient/${patientId}/labs`}>Labs</MenuItem>
             )}
+
+            {props.app.seerlinqApi.userLevel >= 3 && (
+              <MenuItem href={`/patient/${patientId}/medications`}>Medications</MenuItem>
+            )}
           </Menu>
         </>
       }
